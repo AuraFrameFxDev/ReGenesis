@@ -12,7 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.rememberNavController
-import dev.aurakai.auraframefx.aura.ui.AIChatScreen
+// import dev.aurakai.auraframefx.aura.ui.AIChatScreen // DEPRECATED: Use DirectChatScreen instead
 import dev.aurakai.auraframefx.aura.ui.AgentNexusScreen
 import dev.aurakai.auraframefx.aura.ui.AppBuilderScreen
 import dev.aurakai.auraframefx.aura.ui.CanvasScreen
@@ -29,7 +29,7 @@ import dev.aurakai.auraframefx.aura.ui.XhancementScreen
 import dev.aurakai.auraframefx.billing.SubscriptionViewModel
 import dev.aurakai.auraframefx.oracledrive.genesis.cloud.OracleDriveScreen
 import dev.aurakai.auraframefx.ui.customization.GyroscopeCustomizationScreen
-import dev.aurakai.auraframefx.ui.gates.AgentHubScreen
+// import dev.aurakai.auraframefx.ui.gates.AgentHubScreen // REMOVED: Was placeholder, using AgentHubSubmenuScreen instead
 import dev.aurakai.auraframefx.ui.gates.AgentMonitoringScreen
 import dev.aurakai.auraframefx.ui.gates.AurasLabScreen
 import dev.aurakai.auraframefx.ui.gates.ChromaCoreColorsScreen
@@ -39,6 +39,7 @@ import dev.aurakai.auraframefx.ui.gates.GateNavigationScreen
 import dev.aurakai.auraframefx.ui.gates.HelpDeskSubmenuScreen
 import dev.aurakai.auraframefx.ui.gates.LSPosedModuleManagerScreen
 import dev.aurakai.auraframefx.ui.gates.LSPosedSubmenuScreen
+import dev.aurakai.auraframefx.ui.gates.OracleDriveSubmenuScreen
 import dev.aurakai.auraframefx.ui.gates.LiveSupportChatScreen
 import dev.aurakai.auraframefx.ui.gates.LoginScreen
 import dev.aurakai.auraframefx.ui.gates.NotchBarScreen
@@ -197,17 +198,21 @@ fun GenesisNavigationHost(
                     onNavigateToAgents = {}
                 )
             }
-            composable(GenesisRoutes.AI_CHAT) { AIChatScreen() }
+            composable(GenesisRoutes.AI_CHAT) {
+                // Use DirectChatScreen (unified AI chat implementation)
+                val viewModel = hiltViewModel<AgentViewModel>()
+                with(viewModel) {
+                    DirectChatScreen { navController.popBackStack() }
+                }
+            }
 
             // Gate routes with REAL screens
-            composable(GenesisRoutes.AGENT_HUB) {
-                AgentHubScreen(navController = navController)
-            }
+            // AGENT_HUB route is defined later (line 232) with AgentHubSubmenuScreen
             composable(GenesisRoutes.AURAS_LAB) {
                 AuraLabScreen(onNavigateBack = { navController.popBackStack() })
             }
             composable(GenesisRoutes.ORACLE_DRIVE) {
-                OracleDriveScreen(onNavigateBack = { navController.popBackStack() })
+                OracleDriveSubmenuScreen(navController = navController)
             }
             composable(GenesisRoutes.ROM_TOOLS) {
                 ROMToolsSubmenuScreen(navController = navController)

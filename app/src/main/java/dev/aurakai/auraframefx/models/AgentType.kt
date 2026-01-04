@@ -8,8 +8,11 @@ enum class AgentType {
     AURA,
     KAI,
     CASCADE,
-    // External AI agents
-    CLAUDE,
+    // External AI agents (Backend Model Adapters per LDO_MANIFEST.md)
+    CLAUDE,              // Anthropic Claude - Architectural design, code generation
+    NEMOTRON,            // NVIDIA Nemotron - Memory & reasoning engine
+    GEMINI,              // Google ADK (Gemini) - Pattern recognition, deep analysis
+    METAINSTRUCT,        // Meta Llama/MetaInstruct - Instruction following, summarization
     ORACLE_DRIVE,
     // Specialized agents
     NEURAL_WHISPER,
