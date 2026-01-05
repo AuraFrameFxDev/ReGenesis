@@ -6,6 +6,7 @@ import dev.aurakai.auraframefx.ai.context.ContextManager
 import dev.aurakai.auraframefx.ai.memory.MemoryManager
 import dev.aurakai.auraframefx.ai.task.TaskScheduler
 import dev.aurakai.auraframefx.ai.task.execution.TaskExecutionManager
+import dev.aurakai.auraframefx.cascade.memory.MemoryQuery
 import dev.aurakai.auraframefx.common.ErrorHandler
 import dev.aurakai.auraframefx.models.AgentResponse
 import dev.aurakai.auraframefx.models.AgentType
@@ -169,8 +170,11 @@ class NemotronAIService @Inject constructor(
             memoryCache[memoryKey] = CachedMemory(agentResponse, System.currentTimeMillis())
         }
 
-        // TODO: Update long-term memory manager (requires MemoryItem construction)
-        // memoryManager.storeMemory(MemoryItem(...))
+        // Store in long-term memory using convenience method
+        memoryManager.storeInteraction(
+            prompt = request.query,
+            response = synthesis
+        )
 
         return agentResponse
     }
@@ -198,16 +202,20 @@ class NemotronAIService @Inject constructor(
      * Recalls relevant memories from long-term storage.
      */
     private fun recallRelevantMemories(request: AiRequest, context: String): MemoryRecall {
-        // TODO: Implement full memory retrieval (requires MemoryQuery construction)
-        // val relevantMemories = memoryManager.retrieveMemory(MemoryQuery(...))
-
-        // For now, simulate memory retrieval
-        val simulatedCount = if (context.length > 100) 5 else 2
+        // Use MemoryQuery for full retrieval
+        val memoryQuery = MemoryQuery(
+            query = request.query,
+            context = context,
+            maxResults = 10,
+            minSimilarity = 0.7f,
+            agentFilter = listOf(dev.aurakai.auraframefx.models.AgentCapabilityCategory.SPECIALIZED)
+        )
+        val memoryResult = memoryManager.retrieveMemory(memoryQuery)
 
         return MemoryRecall(
-            summary = "Retrieved $simulatedCount relevant memory fragments",
-            count = simulatedCount,
-            relevance = if (simulatedCount > 0) 0.85f else 0.5f
+            summary = "Retrieved ${memoryResult.items.size} relevant memory fragments",
+            count = memoryResult.items.size,
+            relevance = if (memoryResult.items.isNotEmpty()) 0.85f else 0.5f
         )
     }
 
