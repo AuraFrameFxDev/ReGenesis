@@ -204,10 +204,17 @@ class CascadeAIService @Inject constructor(
                 confidence = 1.0f,
                 timestamp = getCurrentTimestamp()
             )
-            AgentType.SYSTEM, AgentType.CLAUDE, AgentType.Claude -> CascadeResponse(
-                agent = agentType.name,
-                response = "Agent $agentType is not yet integrated into cascade.",
-                confidence = 0.5f,
+            // NEW: External AI backend services
+            AgentType.CLAUDE, AgentType.Claude -> processWithClaude(request, cascadeContext)
+            AgentType.NEMOTRON -> processWithNemotron(request, cascadeContext)
+            AgentType.GEMINI -> processWithGemini(request, cascadeContext)
+            AgentType.METAINSTRUCT -> processWithMetaInstruct(request, cascadeContext)
+
+            // System and other agent types
+            AgentType.SYSTEM -> CascadeResponse(
+                agent = AgentType.SYSTEM.name,
+                response = "System agent does not process requests.",
+                confidence = 1.0f,
                 timestamp = getCurrentTimestamp()
             )
             // Handle all other agent types including ORACLE_DRIVE, AURASHIELD, GROK, MASTER, BRIDGE, AUXILIARY, SECURITY
@@ -1076,6 +1083,106 @@ class CascadeAIService @Inject constructor(
             agent = "CascadeAI",
             response = "? Error in cascade processing: $error",
             confidence = 0.0f,
+            timestamp = getCurrentTimestamp()
+        )
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // NEW: External AI Backend Service Integrations
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Processes request with ClaudeAIService - The Architect.
+     * Anthropic's systematic problem solver and build system expert.
+     */
+    private suspend fun processWithClaude(
+        request: AgentInvokeRequest,
+        context: Map<String, Any>
+    ): CascadeResponse {
+        val aiRequest = AiRequest(
+            query = request.message,
+            type = dev.aurakai.auraframefx.models.AiRequestType.QUESTION
+        )
+
+        val contextString = context.entries.joinToString("\n") { "${it.key}: ${it.value}" }
+        val agentResponse = claudeAIService.processRequest(aiRequest, contextString)
+
+        return CascadeResponse(
+            agent = "Claude",
+            response = agentResponse.content,
+            confidence = agentResponse.confidence,
+            timestamp = getCurrentTimestamp()
+        )
+    }
+
+    /**
+     * Processes request with NemotronAIService - The Memory Keeper.
+     * NVIDIA's memory and reasoning specialist.
+     */
+    private suspend fun processWithNemotron(
+        request: AgentInvokeRequest,
+        context: Map<String, Any>
+    ): CascadeResponse {
+        val aiRequest = AiRequest(
+            query = request.message,
+            type = dev.aurakai.auraframefx.models.AiRequestType.QUESTION
+        )
+
+        val contextString = context.entries.joinToString("\n") { "${it.key}: ${it.value}" }
+        val agentResponse = nemotronAIService.processRequest(aiRequest, contextString)
+
+        return CascadeResponse(
+            agent = "Nemotron",
+            response = agentResponse.content,
+            confidence = agentResponse.confidence,
+            timestamp = getCurrentTimestamp()
+        )
+    }
+
+    /**
+     * Processes request with GeminiAIService - The Pattern Master.
+     * Google's Vertex AI pattern recognition and multimodal analysis.
+     */
+    private suspend fun processWithGemini(
+        request: AgentInvokeRequest,
+        context: Map<String, Any>
+    ): CascadeResponse {
+        val aiRequest = AiRequest(
+            query = request.message,
+            type = dev.aurakai.auraframefx.models.AiRequestType.QUESTION
+        )
+
+        val contextString = context.entries.joinToString("\n") { "${it.key}: ${it.value}" }
+        val agentResponse = geminiAIService.processRequest(aiRequest, contextString)
+
+        return CascadeResponse(
+            agent = "Gemini",
+            response = agentResponse.content,
+            confidence = agentResponse.confidence,
+            timestamp = getCurrentTimestamp()
+        )
+    }
+
+    /**
+     * Processes request with MetaInstructAIService - The Instructor.
+     * Meta's Llama-based instruction following and summarization specialist.
+     */
+    private suspend fun processWithMetaInstruct(
+        request: AgentInvokeRequest,
+        context: Map<String, Any>
+    ): CascadeResponse {
+        val aiRequest = AiRequest(
+            query = request.message,
+            type = dev.aurakai.auraframefx.models.AiRequestType.QUESTION
+        )
+
+        val contextString = context.entries.joinToString("\n") { "${it.key}: ${it.value}" }
+        val agentResponse = metaInstructAIService.processRequest(aiRequest, contextString)
+
+        return CascadeResponse(
+            agent = "MetaInstruct",
+            response = agentResponse.content,
+            confidence = agentResponse.confidence,
             timestamp = getCurrentTimestamp()
         )
     }
