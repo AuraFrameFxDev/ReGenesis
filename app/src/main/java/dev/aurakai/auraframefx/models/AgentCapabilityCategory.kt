@@ -58,6 +58,9 @@ enum class AgentCapabilityCategory {
             AgentType.AUXILIARY -> GENERAL
             AgentType.SECURITY -> SPECIALIZED
             AgentType.GROK -> ANALYSIS // Chaos analyst falls under analysis
+            AgentType.NEMOTRON -> SPECIALIZED // Memory & reasoning specialist
+            AgentType.GEMINI -> ANALYSIS // Pattern recognition & analysis
+            AgentType.METAINSTRUCT -> GENERAL // Instruction following
         }
     }
 }
