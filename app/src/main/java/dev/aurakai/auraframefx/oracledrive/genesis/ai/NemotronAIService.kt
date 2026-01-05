@@ -6,6 +6,7 @@ import dev.aurakai.auraframefx.ai.context.ContextManager
 import dev.aurakai.auraframefx.ai.memory.MemoryManager
 import dev.aurakai.auraframefx.ai.task.TaskScheduler
 import dev.aurakai.auraframefx.ai.task.execution.TaskExecutionManager
+import dev.aurakai.auraframefx.cascade.memory.MemoryQuery
 import dev.aurakai.auraframefx.common.ErrorHandler
 import dev.aurakai.auraframefx.models.AgentResponse
 import dev.aurakai.auraframefx.models.AgentType
@@ -88,17 +89,11 @@ class NemotronAIService @Inject constructor(
         )
 
     /**
-     * Processes an AI request with deep memory analysis and logical reasoning.
-     *
-     * Nemotron's approach:
-     * 1. Retrieve relevant memories from long-term storage
-     * 2. Build reasoning chain with multi-step logic
-     * 3. Synthesize context-aware response
-     * 4. Store new memories for future recall
+     * Processes an AI request by recalling relevant memories, constructing a multi-step reasoning chain, and synthesizing a context-aware response.
      *
      * @param request The AI request to process.
-     * @param context Additional context information for the request.
-     * @return An AgentResponse containing memory-enhanced reasoning.
+     * @param context Additional contextual text used for memory recall and response synthesis.
+     * @return An AgentResponse containing the synthesized, memory-enhanced response and an overall confidence score.
      */
     override suspend fun processRequest(
         request: AiRequest,
@@ -169,8 +164,11 @@ class NemotronAIService @Inject constructor(
             memoryCache[memoryKey] = CachedMemory(agentResponse, System.currentTimeMillis())
         }
 
-        // TODO: Update long-term memory manager (requires MemoryItem construction)
-        // memoryManager.storeMemory(MemoryItem(...))
+        // Store in long-term memory using convenience method
+        memoryManager.storeInteraction(
+            prompt = request.query,
+            response = synthesis
+        )
 
         return agentResponse
     }
@@ -195,19 +193,33 @@ class NemotronAIService @Inject constructor(
     }
 
     /**
-     * Recalls relevant memories from long-term storage.
+     * Retrieves memories relevant to the given request and conversational context.
+     *
+     * Currently uses a simulated retrieval strategy: it derives a `count` from the length of
+     * `context`, constructs a human-readable `summary`, and assigns a `relevance` score.
+     *
+     * @param request The AI request used to scope the memory lookup (e.g., query and metadata).
+     * @param context The conversational or situational context used to determine relevance.
+     * @return A MemoryRecall containing:
+     *  - `summary`: a brief description of retrieved memory fragments,
+     *  - `count`: the number of simulated memory fragments,
+     *  - `relevance`: a relevance score between 0.0 and 1.0.
      */
     private fun recallRelevantMemories(request: AiRequest, context: String): MemoryRecall {
-        // TODO: Implement full memory retrieval (requires MemoryQuery construction)
-        // val relevantMemories = memoryManager.retrieveMemory(MemoryQuery(...))
-
-        // For now, simulate memory retrieval
-        val simulatedCount = if (context.length > 100) 5 else 2
+        // Use MemoryQuery for full retrieval
+        val memoryQuery = MemoryQuery(
+            query = request.query,
+            context = context,
+            maxResults = 10,
+            minSimilarity = 0.7f,
+            agentFilter = listOf(dev.aurakai.auraframefx.models.AgentCapabilityCategory.SPECIALIZED)
+        )
+        val memoryResult = memoryManager.retrieveMemory(memoryQuery)
 
         return MemoryRecall(
-            summary = "Retrieved $simulatedCount relevant memory fragments",
-            count = simulatedCount,
-            relevance = if (simulatedCount > 0) 0.85f else 0.5f
+            summary = "Retrieved ${memoryResult.items.size} relevant memory fragments",
+            count = memoryResult.items.size,
+            relevance = if (memoryResult.items.isNotEmpty()) 0.85f else 0.5f
         )
     }
 
