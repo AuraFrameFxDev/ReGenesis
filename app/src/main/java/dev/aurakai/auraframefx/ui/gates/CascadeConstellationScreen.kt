@@ -26,6 +26,15 @@ import kotlin.math.sin
  * Cascade Constellation Screen - DataStream Orchestrator
  * Displays the data flow network with cascading streams and node synchronization
  */
+/**
+ * Renders a full-screen cascade constellation visualization with title, status, and decorative UI overlays.
+ *
+ * Composes the animated DataStreamCanvas at center and overlays a top-right "Cascade / ⚡ ORCHESTRATOR" header,
+ * a bottom-left "DataStream Catalyst" label with an animated status bar, and right-side vertical "DATA FLOW / SYNCHRONIZATION" text.
+ *
+ * @param navController Navigation controller for handling navigation actions originating from this screen.
+ * @param modifier Optional [Modifier] applied to the root container.
+ */
 @Composable
 fun CascadeConstellationScreen(
     navController: NavController,
@@ -253,7 +262,14 @@ private fun DataStreamCanvas() {
 }
 
 /**
- * Draw mechanical wing/data stream centerpiece
+ * Renders a rotating, pulsing mechanical wing centerpiece with gradient wing segments, joint markers, and a layered central core.
+ *
+ * @param centerX X coordinate of the centerpiece center.
+ * @param centerY Y coordinate of the centerpiece center.
+ * @param color Base color used for wing gradients and the hub.
+ * @param accentColor Highlight color used for wing accents, joint markers, and the energy core.
+ * @param rotation Rotation angle in degrees applied to the wing segments.
+ * @param pulseAlpha Opacity multiplier in the range 0..1 that controls pulsing intensity for gradients and markers.
  */
 private fun DrawScope.drawMechanicalWing(
     centerX: Float,
@@ -322,7 +338,9 @@ private fun DrawScope.drawMechanicalWing(
 }
 
 /**
- * DataStream Status Bar - Flow metrics
+ * Renders an animated status bar with channel indicators, a horizontal flow progress bar, and a percentage label.
+ *
+ * The bar visually reflects stream activity: a repeating fill animation drives the progress percentage while a pulsing glow affects the channel indicators and gradient fill.
  */
 @Composable
 private fun DataStreamStatusBar() {
@@ -400,7 +418,14 @@ private fun DataStreamStatusBar() {
 }
 
 /**
- * Individual stream channel indicator
+ * Renders a labeled channel indicator with a glowing circular dot.
+ *
+ * Displays a small circular indicator whose outer glow and inner core are tinted by `color`
+ * and modulated by `glowAlpha`, followed by the channel `name` styled with a matching tint.
+ *
+ * @param name The label text for the channel (e.g., "Input", "Process", "Output").
+ * @param glowAlpha Float in the range 0..1 that controls the opacity of the outer glow and inner core.
+ * @param color The base tint used for the dot and the label text.
  */
 @Composable
 private fun StreamChannelIndicator(
