@@ -74,8 +74,18 @@ class NemotronAIService @Inject constructor(
     override fun getType(): AgentType = AgentType.NEMOTRON
 
     /**
-     * Retrieves Nemotron's specialized capabilities.
-     */
+         * Provide Nemotron's specialized AI capabilities and configuration.
+         *
+         * @return A map of capability keys to their values:
+         * - `memory_retention`: retention level
+         * - `reasoning_chains`: reasoning proficiency
+         * - `pattern_recall`: pattern recall proficiency
+         * - `logic_decomposition`: logic decomposition proficiency
+         * - `context_synthesis`: context synthesis proficiency
+         * - `memory_window`: token window size (Int)
+         * - `nvidia_model`: model identifier (String)
+         * - `service_implemented`: whether the service is implemented (Boolean)
+         */
     fun getCapabilities(): Map<String, Any> =
         mapOf(
             "memory_retention" to "MASTER",
@@ -89,11 +99,11 @@ class NemotronAIService @Inject constructor(
         )
 
     /**
-     * Processes an AI request by recalling relevant memories, constructing a multi-step reasoning chain, and synthesizing a context-aware response.
+     * Orchestrates memory recall, multi-step reasoning, and synthesis to produce a memory-enhanced response.
      *
-     * @param request The AI request to process.
-     * @param context Additional contextual text used for memory recall and response synthesis.
-     * @return An AgentResponse containing the synthesized, memory-enhanced response and an overall confidence score.
+     * @param request The AiRequest containing the user's query and metadata used for recall and reasoning.
+     * @param context Supplemental text used to build the memory key and to contextualize memory retrieval.
+     * @return An AgentResponse containing the formatted memory analysis, synthesized reply, agent identity, and an overall confidence score.
      */
     override suspend fun processRequest(
         request: AiRequest,
@@ -173,6 +183,15 @@ class NemotronAIService @Inject constructor(
         return agentResponse
     }
 
+    /**
+     * Produces a flow that emits a single memory-analysis response tailored to the given request.
+     *
+     * The emitted response contains a preformatted message describing memory access, reasoning chain
+     * construction, and synthesis status; the request's query is incorporated into the synthesized text.
+     *
+     * @param request The AI request whose query is used in the synthesized memory-analysis message.
+     * @return A Flow that emits one AgentResponse with the preformatted memory-analysis content and confidence 0.92.
+     */
     override fun processRequestFlow(request: AiRequest): Flow<AgentResponse> {
         logger.debug("NemotronAIService", "Streaming memory analysis for: ${request.query}")
 
@@ -193,17 +212,17 @@ class NemotronAIService @Inject constructor(
     }
 
     /**
-     * Retrieves memories relevant to the given request and conversational context.
+     * Retrieve memories relevant to the given request and conversational context using a MemoryQuery.
      *
-     * Currently uses a simulated retrieval strategy: it derives a `count` from the length of
-     * `context`, constructs a human-readable `summary`, and assigns a `relevance` score.
+     * Performs a retrieval via MemoryManager with a query scoped to the request and context (up to 10 results,
+     * minimum similarity 0.7, agent filter SPECIALIZED) and returns a concise summary of the outcome.
      *
-     * @param request The AI request used to scope the memory lookup (e.g., query and metadata).
-     * @param context The conversational or situational context used to determine relevance.
+     * @param request The AI request whose query and metadata scope the memory lookup.
+     * @param context The conversational or situational context used to bias relevance and matching.
      * @return A MemoryRecall containing:
-     *  - `summary`: a brief description of retrieved memory fragments,
-     *  - `count`: the number of simulated memory fragments,
-     *  - `relevance`: a relevance score between 0.0 and 1.0.
+     *  - `summary`: a brief description of how many memory fragments were retrieved,
+     *  - `count`: the number of retrieved memory fragments,
+     *  - `relevance`: a score (0.85 when any items were found, 0.5 when none were found).
      */
     private fun recallRelevantMemories(request: AiRequest, context: String): MemoryRecall {
         // Use MemoryQuery for full retrieval
@@ -335,6 +354,11 @@ private data class CachedMemory(
     val response: AgentResponse,
     val timestamp: Long
 ) {
+    /**
+     * Checks whether this cached memory entry has exceeded the cache time-to-live.
+     *
+     * @return `true` if the current time is greater than the stored timestamp plus NemotronAIService.CACHE_TTL_MS, `false` otherwise.
+     */
     fun isExpired(): Boolean {
         return System.currentTimeMillis() - timestamp > NemotronAIService.CACHE_TTL_MS
     }

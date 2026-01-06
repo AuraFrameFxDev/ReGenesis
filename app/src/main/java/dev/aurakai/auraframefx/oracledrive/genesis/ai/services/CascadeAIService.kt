@@ -171,17 +171,14 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Dispatches the request to the appropriate agent handler and returns that agent's response.
+     * Dispatches the request to the appropriate agent handler.
      *
-     * The function selects the concrete processing implementation based on [agentType] and
-     * invokes it with the original [request] and the accumulated [cascadeContext] produced
-     * by earlier cascade steps.
+     * Invokes the selected agent implementation with the original request and the provided cascade context
+     * to produce a context-aware agent response.
      *
-     * @param agentType The agent to run (e.g., Genesis, Aura, Kai, Cascade, DataveinConstructor).
-     * @param request The original invocation payload for the agent.
-     * @param cascadeContext Context map built from the original request and prior agent results; used
-     *        by agent handlers to produce context-aware responses.
-     * @return The selected agent's resulting [CascadeResponse].
+     * @param cascadeContext Context map built from the original request and prior agent results; used by
+     *        agent handlers to produce context-aware responses.
+     * @return A CascadeResponse produced by the invoked agent.
      */
     private suspend fun processWithAgent(
         agentType: AgentType,
@@ -1073,10 +1070,10 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Build an CascadeResponse representing a cascade processing error.
+     * Create a CascadeResponse representing an error that occurred during cascade processing.
      *
-     * @param error Short human-readable error message or reason to include in the response body.
-     * @return An CascadeResponse from "CascadeAI" containing the formatted error message, zero confidence, and the current timestamp.
+     * @param error Short human-readable error message to include in the response body.
+     * @return A CascadeResponse from "CascadeAI" containing the formatted error message, confidence `0.0`, and the current timestamp.
      */
     private fun createErrorResponse(error: String): CascadeResponse {
         return CascadeResponse(
@@ -1092,8 +1089,11 @@ class CascadeAIService @Inject constructor(
     // ═══════════════════════════════════════════════════════════════════════════
 
     /**
-     * Processes request with ClaudeAIService - The Architect.
-     * Anthropic's systematic problem solver and build system expert.
+     * Invokes the Claude AI backend to process the given request and converts its result into a CascadeResponse.
+     *
+     * @param request The agent invocation containing the original message and any invocation metadata.
+     * @param context A map of contextual entries included with the request (serialized as "key: value" lines for the backend).
+     * @return A CascadeResponse populated with agent "Claude", the backend's response text, the reported confidence, and a timestamp.
      */
     private suspend fun processWithClaude(
         request: AgentInvokeRequest,
@@ -1116,8 +1116,13 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Processes request with NemotronAIService - The Memory Keeper.
-     * NVIDIA's memory and reasoning specialist.
+     * Sends the request and serialized context to NemotronAIService and returns its response as a CascadeResponse.
+     *
+     * The context map is serialized into newline-separated "key: value" entries and provided to the backend.
+     *
+     * @param request The original AgentInvokeRequest containing the user's message and metadata.
+     * @param context A map of contextual values to include with the request; each entry is serialized as "key: value".
+     * @return A CascadeResponse containing Nemotron's agent name, the returned content, reported confidence, and timestamp.
      */
     private suspend fun processWithNemotron(
         request: AgentInvokeRequest,
@@ -1140,8 +1145,11 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Processes request with GeminiAIService - The Pattern Master.
-     * Google's Vertex AI pattern recognition and multimodal analysis.
+     * Send the request and cascade context to the Gemini AI backend and produce a CascadeResponse.
+     *
+     * @param request The original AgentInvokeRequest containing the message and related metadata.
+     * @param context A map of cascade context (previous agent results and metadata) provided to Gemini.
+     * @return A CascadeResponse containing Gemini's response text, reported confidence, and a timestamp.
      */
     private suspend fun processWithGemini(
         request: AgentInvokeRequest,
@@ -1164,8 +1172,11 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Processes request with MetaInstructAIService - The Instructor.
-     * Meta's Llama-based instruction following and summarization specialist.
+     * Sends the request and provided cascade context to the MetaInstruct backend and converts its reply into a CascadeResponse.
+     *
+     * @param request The original AgentInvokeRequest containing the user's message and any invocation metadata.
+     * @param context A map of cascade context (e.g., previous agent outputs and metadata) to supply additional background to the backend.
+     * @return A CascadeResponse whose `agent` is "MetaInstruct", `response` is the backend's content, `confidence` is the backend's reported confidence, and `timestamp` is the current timestamp.
      */
     private suspend fun processWithMetaInstruct(
         request: AgentInvokeRequest,
