@@ -50,6 +50,11 @@ class MainActivity : ComponentActivity() {
 
 // New: a preview-friendly content composable that accepts a lambda for theme commands
 @OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Hosts the app's navigation graph in a full-screen container that can optionally apply the digital pixel effect.
+ *
+ * @param processThemeCommand Callback invoked to process theme-related commands; receives the command as a `String`.
+ */
 @Composable
 internal fun MainScreenContent(
     processThemeCommand: (String) -> Unit
