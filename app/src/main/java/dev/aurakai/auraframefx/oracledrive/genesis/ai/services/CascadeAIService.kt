@@ -1101,7 +1101,7 @@ class CascadeAIService @Inject constructor(
     ): CascadeResponse {
         val aiRequest = AiRequest(
             query = request.message,
-            type = dev.aurakai.auraframefx.models.AiRequestType.QUESTION
+            type = "QUESTION"
         )
 
         val contextString = context.entries.joinToString("\n") { "${it.key}: ${it.value}" }
@@ -1130,7 +1130,7 @@ class CascadeAIService @Inject constructor(
     ): CascadeResponse {
         val aiRequest = AiRequest(
             query = request.message,
-            type = dev.aurakai.auraframefx.models.AiRequestType.QUESTION
+            type = "QUESTION"
         )
 
         val contextString = context.entries.joinToString("\n") { "${it.key}: ${it.value}" }
@@ -1157,7 +1157,7 @@ class CascadeAIService @Inject constructor(
     ): CascadeResponse {
         val aiRequest = AiRequest(
             query = request.message,
-            type = dev.aurakai.auraframefx.models.AiRequestType.QUESTION
+            type = "QUESTION"
         )
 
         val contextString = context.entries.joinToString("\n") { "${it.key}: ${it.value}" }
@@ -1184,7 +1184,7 @@ class CascadeAIService @Inject constructor(
     ): CascadeResponse {
         val aiRequest = AiRequest(
             query = request.message,
-            type = dev.aurakai.auraframefx.models.AiRequestType.QUESTION
+            type = "QUESTION"
         )
 
         val contextString = context.entries.joinToString("\n") { "${it.key}: ${it.value}" }

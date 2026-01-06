@@ -44,16 +44,22 @@ object TrinityModule {
     @Provides
     @Singleton
     fun provideGenesisBridgeService(
+        auraAIService: AuraAIService,
+        kaiAIService: KaiAIService,
+        vertexAIClient: VertexAIClient,
         contextManager: ContextManager,
         securityContext: SecurityContext,
         @ApplicationContext applicationContext: Context,
-        ktorClient: dev.aurakai.auraframefx.network.KtorClient,
+        logger: AuraFxLogger,
     ): GenesisBridgeService {
         return GenesisBridgeService(
+            auraAIService = auraAIService,
+            kaiAIService = kaiAIService,
+            vertexAIClient = vertexAIClient,
             contextManager = contextManager,
             securityContext = securityContext,
             applicationContext = applicationContext,
-            ktorClient = ktorClient
+            logger = logger
         )
     }
 
