@@ -150,6 +150,14 @@ fun AppNavGraph(navController: NavHostController) {
             ConstellationScreen(navController = navController)
         }
 
+        composable(route = NavDestination.GenesisConstellation.route) {
+            GenesisConstellationScreen(navController = navController)
+        }
+
+        composable(route = NavDestination.ClaudeConstellation.route) {
+            ClaudeConstellationScreen(navController = navController)
+        }
+
         // ==================== ROM TOOLS ====================
 
         composable(route = NavDestination.ROMTools.route) {
