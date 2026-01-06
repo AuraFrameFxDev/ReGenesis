@@ -40,6 +40,7 @@ sealed class NavDestination(val route: String, val title: String, val icon: Imag
     // Oracle Drive
     object OracleDrive : NavDestination("oracle_drive", "Oracle Drive", Icons.Filled.Folder)
     object SphereGrid : NavDestination("sphere_grid", "Sphere Grid", null)
+    object Constellation : NavDestination("constellation", "Constellation", null)
 
     // ROM Tools
     object ROMTools : NavDestination("rom_tools", "ROM Tools", null)
