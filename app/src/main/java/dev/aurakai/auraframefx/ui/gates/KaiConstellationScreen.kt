@@ -26,6 +26,18 @@ import kotlin.math.sin
  * Kai Constellation Screen - The Sentinel Shield
  * Displays the defensive perimeter with hexagonal shield and security nodes
  */
+/**
+ * Renders the Kai constellation screen: an animated sentinel shield visualization with agent
+ * identity and system status overlays.
+ *
+ * The composable places a central animated SentinelShieldCanvas and overlays:
+ * - Top-right agent info (name and level)
+ * - Bottom-left system status with a scanning status bar
+ * - Right-side vertical label column reading "SYSTEM SYNC / OVERDUE PARAMETERS"
+ *
+ * @param navController Navigation controller received by the screen (unused for internal UI composition).
+ * @param modifier Modifier applied to the root container.
+ */
 @Composable
 fun KaiConstellationScreen(
     navController: NavController,
@@ -120,7 +132,9 @@ fun KaiConstellationScreen(
 }
 
 /**
- * Sentinel Shield Canvas with hexagonal defense grid
+ * Renders the animated Sentinel shield visualization used as the central defensive constellation.
+ *
+ * The composable displays a pulsing hexagonal shield, a rotating scan beam, and an animated ring of perimeter security nodes connected by a defensive perimeter; visuals use a purple/orange/cyan palette to indicate status and emphasis.
  */
 @Composable
 private fun SentinelShieldCanvas() {
@@ -246,8 +260,9 @@ private fun SentinelShieldCanvas() {
 }
 
 /**
- * Draw hexagonal shield with energy field
- */
+ * Renders a hexagonal shield with layered glow, alternating-color border segments, inner core connections, and a central core.
+ *
+ * @param pulseAlpha A 0..1 value that modulates the opacity of the glow, border, inner connections, and core visuals.
 private fun DrawScope.drawHexagonalShield(
     centerX: Float,
     centerY: Float,
@@ -335,7 +350,11 @@ private fun DrawScope.drawHexagonalShield(
 }
 
 /**
- * Sentinel Status Bar - Security metrics
+ * Displays the sentinel's security metrics row and an animated scan progress bar.
+ *
+ * Shows three metric indicators (Firewall, Encryption, Monitoring) whose dot glow is driven
+ * by a pulsing animation, and a horizontal scan bar that fills over time with a gradient.
+ * Also renders a percentage text reflecting the current scan progress.
  */
 @Composable
 private fun SentinelStatusBar() {
@@ -413,7 +432,11 @@ private fun SentinelStatusBar() {
 }
 
 /**
- * Individual security metric indicator
+ * Displays a labeled security metric with a small glowing status dot.
+ *
+ * @param name The metric label shown to the right of the indicator.
+ * @param glowAlpha Alpha multiplier (typically 0.0–1.0) controlling the intensity of the dot's glow.
+ * @param color Base color used for the dot and label tint.
  */
 @Composable
 private fun SecurityMetricIndicator(
