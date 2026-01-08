@@ -5,6 +5,8 @@ import dev.aurakai.auraframefx.events.MemoryEvent
 import dev.aurakai.auraframefx.models.AgentResponse
 import dev.aurakai.auraframefx.models.AiRequest
 import dev.aurakai.auraframefx.models.AgentType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,7 +24,10 @@ class GenesisBackedKaiAIService @Inject constructor(
      * This implementation performs no actions (no-op) but exists to satisfy the lifecycle contract.
      */
     override suspend fun initialize() {
+        if (isInitialized) return
         // Initialization logic
+        eventBus.emit(MemoryEvent("KAI_INITIALIZED", mapOf("timestamp" to System.currentTimeMillis())))
+        isInitialized = true
     }
 
     /**
