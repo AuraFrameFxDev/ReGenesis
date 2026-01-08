@@ -257,9 +257,6 @@ fun GenesisNavigationHost(
             composable(GenesisRoutes.FIREWALL) {
                 FirewallScreen()
             }
-            composable(GenesisRoutes.SENTINELS_FORTRESS) {
-                SentinelsFortressScreen(onBack = { navController.popBackStack() })
-            }
             composable(GenesisRoutes.SPHERE_GRID) {
                 SphereGridScreen(navController = navController)
             }

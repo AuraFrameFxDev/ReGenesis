@@ -45,6 +45,12 @@ abstract class AiServiceModule {
     @Singleton
     abstract fun bindAuraAIService(impl: DefaultAuraAIService): AuraAIService
 
+    /**
+     * Binds GenesisBackedKaiAIService as the KaiAIService implementation in the DI graph.
+     *
+     * @param impl The GenesisBackedKaiAIService instance to bind.
+     * @return The bound KaiAIService implementation.
+     */
     @Binds
     @Singleton
     abstract fun bindKaiAIService(impl: GenesisBackedKaiAIService): KaiAIService

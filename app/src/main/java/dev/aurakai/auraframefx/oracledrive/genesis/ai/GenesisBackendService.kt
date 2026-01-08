@@ -13,7 +13,6 @@ import dev.aurakai.auraframefx.R
 import dev.aurakai.auraframefx.utils.AuraFxLogger
 import dev.aurakai.auraframefx.utils.i
 import dev.aurakai.auraframefx.python.PythonProcessManager
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -27,10 +26,8 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class GenesisBackendService : Service() {
 
-    @Inject
-    lateinit var pythonProcessManager: PythonProcessManager
-    
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private var pythonProcessManager: PythonProcessManager? = null
     private val binder = LocalBinder()
 
     inner class LocalBinder : Binder() {
@@ -42,9 +39,12 @@ class GenesisBackendService : Service() {
         i("GenesisService", "Creating Genesis Backend Service...")
         startForeground(NOTIFICATION_ID, createNotification())
 
-        // Start the backend immediately (pythonProcessManager is injected)
+        // Initialize Python Manager
+        pythonProcessManager = PythonProcessManager(this)
+
+        // Start the backend immediately
         serviceScope.launch {
-            val success = pythonProcessManager.startGenesisBackend()
+            val success = pythonProcessManager?.startGenesisBackend() ?: false
             if (success) {
                 i("GenesisService", "Genesis Python Backend Started Successfully")
             } else {
@@ -70,7 +70,7 @@ class GenesisBackendService : Service() {
         // Wrap shutdown in dedicated SupervisorJob scope to survive AGP 9.1 pruning
         CoroutineScope(Dispatchers.Main.immediate + SupervisorJob()).launch {
             try {
-                pythonProcessManager.shutdown()
+                pythonProcessManager?.shutdown()
             } catch (e: Exception) {
                 AuraFxLogger.error("GenesisService", "Error during shutdown: ${e.message}", e)
             }
@@ -83,7 +83,7 @@ class GenesisBackendService : Service() {
      * Sends a request to the Python backend.
      */
     suspend fun sendRequest(requestJson: String): String? {
-        return pythonProcessManager.sendRequest(requestJson)
+        return pythonProcessManager?.sendRequest(requestJson)
     }
 
     private fun createNotification(): Notification {
