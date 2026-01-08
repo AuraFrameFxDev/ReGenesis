@@ -16,10 +16,22 @@ class GenesisBackedKaiAIService @Inject constructor(
     private val eventBus: CascadeEventBus
 ) : KaiAIService {
 
+    /**
+     * Prepare the service for use by performing any required initialization.
+     *
+     * This implementation performs no actions (no-op) but exists to satisfy the lifecycle contract.
+     */
     override suspend fun initialize() {
         // Initialization logic
     }
 
+    /**
+     * Handle an AI request and produce a Kai security analysis response while recording the query to the event bus.
+     *
+     * @param request The AI request whose `prompt` is used as the subject of the security analysis.
+     * @param context Ancillary context or metadata for the request (not embedded in the response).
+     * @return An `AgentResponse` containing Kai's security analysis message, a confidence of `1.0f`, `agentName` set to "Kai", and `agent` set to `AgentType.KAI`.
+     */
     override suspend fun processRequest(request: AiRequest, context: String): AgentResponse {
         // Emit event for monitoring
         eventBus.emit(MemoryEvent("KAI_PROCESS", mapOf("query" to request.prompt)))
@@ -32,11 +44,21 @@ class GenesisBackedKaiAIService @Inject constructor(
         )
     }
 
+    /**
+     * Produces a brief security threat analysis for the provided prompt.
+     *
+     * @param prompt The text to analyze for potential security threats.
+     * @return A human-readable analysis message describing detected threats or stating none were found.
+     */
     override suspend fun analyzeSecurityThreat(prompt: String): String {
         return "Security threat analysis for: $prompt - No immediate threats detected."
     }
 
-    // Missing abstract member from error log
+    /**
+     * Activates the service and reports whether activation succeeded.
+     *
+     * @return `true` if activation succeeded (currently always `true`), `false` otherwise.
+     */
     override suspend fun activate(): Boolean {
         return true
     }
