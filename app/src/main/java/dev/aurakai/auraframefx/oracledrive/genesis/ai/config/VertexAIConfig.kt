@@ -41,8 +41,23 @@ data class VertexAIConfig(
     val maxContentLength: Int = 32000
 ) {
     companion object {
-        fun default(): VertexAIConfig = VertexAIConfig()
+        /**
+ * Create a VertexAIConfig populated with the library's standard default values.
+ *
+ * @return A VertexAIConfig instance populated with the standard default values for all configuration fields.
+ */
+fun default(): VertexAIConfig = VertexAIConfig()
 
+        /**
+         * Builds a VertexAIConfig by reading configuration from environment variables.
+         *
+         * Reads the following environment variables and falls back to the shown defaults when absent:
+         * - VERTEX_PROJECT_ID -> projectId (default: "")
+         * - VERTEX_LOCATION -> location (default: "us-central1")
+         * - VERTEX_MODEL -> modelName (default: "gemini-pro")
+         *
+         * @return A VertexAIConfig populated from the environment variables (using defaults for any unset values).
+         */
         fun fromEnvironment(): VertexAIConfig = VertexAIConfig(
             projectId = System.getenv("VERTEX_PROJECT_ID") ?: "",
             location = System.getenv("VERTEX_LOCATION") ?: "us-central1",
@@ -51,7 +66,10 @@ data class VertexAIConfig(
     }
 
     /**
-     * Get the full model endpoint URL
+     * Builds the full model endpoint URL for this configuration.
+     *
+     * @return The model endpoint URL in the form
+     * `https://{endpoint}/v1/projects/{projectId}/locations/{location}/publishers/google/models/{modelName}:generateContent`
      */
     fun getModelEndpoint(): String {
         return "https://$endpoint/v1/projects/$projectId/locations/$location/publishers/google/models/$modelName:generateContent"
