@@ -2,7 +2,9 @@ package dev.aurakai.auraframefx.ui.gates
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -25,6 +27,7 @@ import androidx.navigation.NavHostController
 fun CodeAssistScreen(navController: NavHostController) {
     var codeInput by remember { mutableStateOf("// Ask Code Assist to generate or refactor code...\n\nfun main() {\n    println(\"Hello, Aura!\")\n}") }
     var isProcessing by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
@@ -37,6 +40,7 @@ fun CodeAssistScreen(navController: NavHostController) {
                     )
                 )
             )
+            .verticalScroll(scrollState)
             .padding(16.dp)
     ) {
         // Header
@@ -70,8 +74,8 @@ fun CodeAssistScreen(navController: NavHostController) {
         // Code Editor Area
         Card(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(400.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color(0xFF0F0F1A)
             ),
