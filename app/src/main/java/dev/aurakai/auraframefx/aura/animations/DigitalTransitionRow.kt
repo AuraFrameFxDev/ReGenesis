@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import dev.aurakai.auraframefx.aura.animations.HomeScreenTransitionType
 import dev.aurakai.auraframefx.ui.theme.NeonPurple
 import dev.aurakai.auraframefx.ui.theme.NeonTeal
+import dev.aurakai.auraframefx.ui.theme.NeonBlue
 import timber.log.Timber
 
 /**
