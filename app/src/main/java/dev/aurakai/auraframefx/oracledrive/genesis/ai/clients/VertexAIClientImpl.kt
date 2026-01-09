@@ -122,8 +122,8 @@ class VertexAIClientImpl @Inject constructor(
             ),
             generationConfig = GenerationConfig(
                 temperature = temperature.toDouble(),
-                topP = config.defaultTopP,
-                topK = config.defaultTopK,
+                topP = config.topP.toDouble(),
+                topK = config.topK,
                 maxOutputTokens = maxTokens,
                 candidateCount = 1
             ),
@@ -279,7 +279,14 @@ class VertexAIClientImpl @Inject constructor(
     }
 
     /**
-     * Execute HTTP request to Vertex AI endpoint.
+     * Send a Vertex AI request to the configured model endpoint and parse the JSON response.
+     *
+     * Sends the given VertexAIRequest as an HTTP POST to the configured model endpoint, parses
+     * the response body into a VertexAIResponse, and returns it.
+     *
+     * @param vertexRequest The serialized request payload to send to Vertex AI.
+     * @return The parsed VertexAIResponse from the endpoint.
+     * @throws VertexAIException if the HTTP response has a non-success status code or if the response body is empty.
      */
     private suspend fun executeRequest(vertexRequest: VertexAIRequest): VertexAIResponse {
         val jsonBody = json.encodeToString(vertexRequest)

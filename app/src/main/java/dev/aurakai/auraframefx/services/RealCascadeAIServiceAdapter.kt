@@ -14,6 +14,13 @@ import javax.inject.Singleton
 @Singleton
 class RealCascadeAIServiceAdapter @Inject constructor() : CascadeAIService {
 
+    /**
+     * Processes an AI request within a given context and produces an AgentResponse.
+     *
+     * @param request The AI request containing the prompt and associated data.
+     * @param context Contextual information to influence processing; may be an empty string.
+     * @return An AgentResponse representing a successful CascadeAI result whose content is derived from the request prompt, with confidence 1.0 and agentName "CascadeAI".
+     */
     override suspend fun processRequest(request: AiRequest, context: String): AgentResponse {
         // Real implementation logic would go here
         // For now, returning a basic success response to satisfy the interface
@@ -24,7 +31,12 @@ class RealCascadeAIServiceAdapter @Inject constructor() : CascadeAIService {
         )
     }
 
-    // Helper method to support legacy signatures if needed or streaming
+    /**
+     * Provide a Flow that emits a single AgentResponse for the given AI request.
+     *
+     * @param request The AI request to process.
+     * @return A Flow that emits one AgentResponse produced by processing the request with an empty context.
+     */
     fun streamRequest(request: AiRequest): Flow<AgentResponse> = flow {
         emit(processRequest(request, ""))
     }
