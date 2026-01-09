@@ -27,6 +27,7 @@ import dev.aurakai.auraframefx.ui.gates.FAQBrowserScreen
 import dev.aurakai.auraframefx.ui.gates.FusionModeScreen
 import dev.aurakai.auraframefx.ui.gates.GateNavigationScreen
 import dev.aurakai.auraframefx.ui.gates.GenesisConstellationScreen
+import dev.aurakai.auraframefx.ui.gates.GrokConstellationScreen
 import dev.aurakai.auraframefx.ui.gates.HelpDeskSubmenuScreen
 import dev.aurakai.auraframefx.ui.gates.HookManagerScreen
 import dev.aurakai.auraframefx.ui.gates.KaiConstellationScreen
@@ -183,6 +184,10 @@ fun AppNavGraph(navController: NavHostController) {
 
         composable(route = NavDestination.CascadeConstellation.route) {
             CascadeConstellationScreen(navController = navController)
+        }
+
+        composable(route = NavDestination.GrokConstellation.route) {
+            GrokConstellationScreen(navController = navController)
         }
 
         // ==================== ROM TOOLS ====================

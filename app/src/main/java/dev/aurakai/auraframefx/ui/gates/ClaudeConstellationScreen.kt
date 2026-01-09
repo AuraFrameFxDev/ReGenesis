@@ -2,6 +2,7 @@ package dev.aurakai.auraframefx.ui.gates
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -9,16 +10,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import dev.aurakai.auraframefx.R
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -148,7 +153,19 @@ private fun ArchitectBlueprintCanvas() {
         label = "pulse"
     )
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    // Scale pulsing for centerpiece
+    val centerScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "center_scale"
+    )
+
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
         val centerX = size.width / 2
         val centerY = size.height / 2
 
@@ -174,13 +191,7 @@ private fun ArchitectBlueprintCanvas() {
             )
         }
 
-        // Draw T-square centerpiece (architect's tool)
-        drawTSquare(
-            centerX = centerX,
-            centerY = centerY,
-            color = orangeColor,
-            pulseAlpha = pulseAlpha
-        )
+        // T-square centerpiece will be overlaid as PNG image below
 
         // Draw build system nodes in a systematic grid pattern
         val nodes = mutableListOf<Offset>()
@@ -252,6 +263,17 @@ private fun ArchitectBlueprintCanvas() {
                 center = Offset(particleX, particleY)
             )
         }
+    }
+
+        // PNG Centerpiece Image Overlay (Compass + Gear)
+        Image(
+            painter = painterResource(id = R.drawable.constellation_claude_compass),
+            contentDescription = "Claude Compass Constellation",
+            modifier = Modifier
+                .size(350.dp)
+                .scale(centerScale)
+                .alpha(pulseAlpha)
+        )
     }
 }
 
