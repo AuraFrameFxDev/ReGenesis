@@ -113,6 +113,7 @@ class VertexAIClientImpl @Inject constructor(
         }
 
         // Build Vertex AI request
+        val topPValue = config.topP.toDouble()
         val request = VertexAIRequest(
             contents = listOf(
                 Content(
@@ -122,7 +123,7 @@ class VertexAIClientImpl @Inject constructor(
             ),
             generationConfig = GenerationConfig(
                 temperature = temperature.toDouble(),
-                topP = config.topP.toDouble(),
+                topP = topPValue,
                 topK = config.topK,
                 maxOutputTokens = maxTokens,
                 candidateCount = 1
