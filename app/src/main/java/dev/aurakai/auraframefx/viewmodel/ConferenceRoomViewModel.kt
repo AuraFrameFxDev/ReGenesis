@@ -156,7 +156,7 @@ class ConferenceRoomViewModel @Inject constructor(
                     }
 
                     AgentType.CLAUDE -> flow {
-                        emit(claudeService.processRequest(request, context).first())
+                        emit(claudeService.processRequest(request, context))
                     }
 
                     AgentType.CASCADE -> flow {
@@ -182,7 +182,7 @@ class ConferenceRoomViewModel @Inject constructor(
 
                     AgentType.METAINSTRUCT -> flow {
                         // MetaInstruct for self-modification and code evolution
-                        emit(metaInstructService.processRequest(request, context).first())
+                        emit(metaInstructService.processRequest(request, context))
                     }
 
                     AgentType.GENESIS -> {
