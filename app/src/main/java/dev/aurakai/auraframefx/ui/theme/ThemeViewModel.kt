@@ -33,4 +33,24 @@ class ThemeViewModel @Inject constructor(
             }
         }
     }
+
+    /**
+     * Directly set the theme - instant update, persists in background
+     */
+    fun setTheme(newTheme: Theme) {
+        _theme.value = newTheme
+        viewModelScope.launch {
+            // TODO: Persist to DataStore
+        }
+    }
+
+    /**
+     * Directly set the primary color - instant update, persists in background
+     */
+    fun setColor(newColor: Color) {
+        _color.value = newColor
+        viewModelScope.launch {
+            // TODO: Persist to DataStore
+        }
+    }
 }

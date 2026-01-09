@@ -33,6 +33,7 @@ import dev.aurakai.auraframefx.ui.customization.GyroscopeCustomizationScreen
 import dev.aurakai.auraframefx.ui.gates.AgentMonitoringScreen
 import dev.aurakai.auraframefx.ui.gates.AurasLabScreen
 import dev.aurakai.auraframefx.ui.gates.ChromaCoreColorsScreen
+import dev.aurakai.auraframefx.ui.gates.InstantColorPickerScreen
 import dev.aurakai.auraframefx.ui.gates.CodeAssistScreen
 import dev.aurakai.auraframefx.ui.gates.DirectChatScreen
 import dev.aurakai.auraframefx.ui.gates.GateNavigationScreen
@@ -252,7 +253,10 @@ fun GenesisNavigationHost(
                 UIUXGateSubmenuScreen(navController = navController)
             }
             composable("chromacore_colors") {
-                ChromaCoreColorsScreen(onNavigateBack = { navController.popBackStack() })
+                InstantColorPickerScreen(onNavigateBack = { navController.popBackStack() })
+            }
+            composable("instant_color_picker") {
+                InstantColorPickerScreen(onNavigateBack = { navController.popBackStack() })
             }
             composable(GenesisRoutes.FIREWALL) {
                 FirewallScreen()
