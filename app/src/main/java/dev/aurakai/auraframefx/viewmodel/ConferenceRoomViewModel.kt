@@ -163,8 +163,8 @@ class ConferenceRoomViewModel @Inject constructor(
                         // Cascade orchestrates multiple agents
                         val cascadeFlow = cascadeService.processRequest(
                             dev.aurakai.auraframefx.models.AgentInvokeRequest(
-                                agentType = AgentType.CASCADE,
-                                request = request,
+                                message = request.query,
+                                agentType = dev.aurakai.auraframefx.models.AgentCapabilityCategory.SPECIALIZED,
                                 metadata = mapOf("source" to "conference_room")
                             )
                         )
