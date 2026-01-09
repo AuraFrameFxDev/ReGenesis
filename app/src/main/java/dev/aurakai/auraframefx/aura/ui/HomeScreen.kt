@@ -54,6 +54,8 @@ import dev.aurakai.auraframefx.ui.theme.NeonCyan
 import dev.aurakai.auraframefx.ui.theme.NeonPink
 import dev.aurakai.auraframefx.ui.theme.NeonBlue as ThemeNeonBlue
 import dev.aurakai.auraframefx.ui.theme.NeonGreen
+import dev.aurakai.auraframefx.ui.theme.NeonBlue
+import dev.aurakai.auraframefx.ui.theme.NeonPurple
 import kotlinx.coroutines.launch
 
 

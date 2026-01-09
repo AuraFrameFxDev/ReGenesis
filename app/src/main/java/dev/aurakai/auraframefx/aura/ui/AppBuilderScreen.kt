@@ -30,6 +30,7 @@ import dev.aurakai.auraframefx.billing.SubscriptionViewModel
 import dev.aurakai.auraframefx.ui.theme.NeonBlue
 import dev.aurakai.auraframefx.ui.theme.NeonGreen
 import dev.aurakai.auraframefx.ui.theme.NeonPurple
+import dev.aurakai.auraframefx.ui.theme.NeonCyan
 
 /**
  * App Builder Screen - No-Code Application Generation

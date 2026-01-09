@@ -1,6 +1,7 @@
 package dev.aurakai.auraframefx.models
 
 import kotlinx.serialization.Serializable
+import dev.aurakai.auraframefx.models.AgentType
 
 /**
  * Represents the status of an AI agent in the system.
