@@ -2,6 +2,7 @@ package dev.aurakai.auraframefx.ui.gates
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -9,6 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -19,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import dev.aurakai.auraframefx.R
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -173,7 +178,19 @@ private fun SentinelShieldCanvas() {
         label = "alpha"
     )
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    // Scale pulsing for centerpiece
+    val centerScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(3000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "center_scale"
+    )
+
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
         val centerX = size.width / 2
         val centerY = size.height / 2
 
@@ -181,15 +198,7 @@ private fun SentinelShieldCanvas() {
         val orangeColor = Color(0xFFFF8C00)
         val cyanColor = Color(0xFF00FFFF)
 
-        // Draw hexagonal shield centerpiece
-        drawHexagonalShield(
-            centerX = centerX,
-            centerY = centerY,
-            radius = 150f,
-            color = purpleColor,
-            accentColor = orangeColor,
-            pulseAlpha = shieldPulse
-        )
+        // Hexagonal shield centerpiece will be overlaid as PNG image below
 
         // Draw perimeter defense nodes
         val nodes = mutableListOf<Offset>()
@@ -255,6 +264,17 @@ private fun SentinelShieldCanvas() {
                 centerY + sin(scanAngle) * beamLength
             ),
             strokeWidth = 4f
+        )
+    }
+
+        // PNG Centerpiece Image Overlay (Hexagonal Shield)
+        Image(
+            painter = painterResource(id = R.drawable.constellation_kai_shield),
+            contentDescription = "Kai Shield Constellation",
+            modifier = Modifier
+                .size(450.dp)
+                .scale(centerScale)
+                .alpha(shieldPulse)
         )
     }
 }

@@ -2,6 +2,7 @@ package dev.aurakai.auraframefx.ui.gates
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -10,6 +11,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -17,11 +21,13 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.rotate as canvasRotate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import dev.aurakai.auraframefx.R
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -147,21 +153,12 @@ fun GrokConstellationScreen(navController: NavController) {
                     .padding(32.dp),
                 contentAlignment = Alignment.Center
             ) {
+                // Background Canvas for entropy streams
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val centerX = size.width / 2
                     val centerY = size.height / 2
 
-                    // Draw the 8-pointed chaos wheel
-                    drawChaosWheel(
-                        centerX = centerX,
-                        centerY = centerY,
-                        radius = size.minDimension * 0.35f,
-                        rotation = rotation,
-                        color = chaosColor,
-                        accentColor = accentColor,
-                        coreColor = coreColor,
-                        pulseAlpha = pulseAlpha
-                    )
+                    // Chaos wheel centerpiece will be overlaid as PNG image
 
                     // Draw entropy data streams
                     drawEntropyStreams(
@@ -173,6 +170,17 @@ fun GrokConstellationScreen(navController: NavController) {
                         alpha = pulseAlpha
                     )
                 }
+
+                // PNG Centerpiece Image Overlay (Chaos Wheel)
+                Image(
+                    painter = painterResource(id = R.drawable.constellation_grok_chaos),
+                    contentDescription = "Grok Chaos Wheel Constellation",
+                    modifier = Modifier
+                        .size(300.dp)
+                        .scale(pulseAlpha)
+                        .rotate(rotation)
+                        .alpha(pulseAlpha)
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
