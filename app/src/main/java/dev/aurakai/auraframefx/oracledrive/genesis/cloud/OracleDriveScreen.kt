@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import dev.aurakai.auraframefx.aura.ui.OracleDriveUiState
 import dev.aurakai.auraframefx.aura.ui.OracleDriveViewModel
 
@@ -24,6 +25,7 @@ import dev.aurakai.auraframefx.aura.ui.OracleDriveViewModel
 fun OracleDriveScreen(
     onNavigateBack: () -> Unit = {},
     viewModel: OracleDriveViewModel = hiltViewModel(),
+    navController: NavHostController,
 ) {
     val uiState by viewModel.uiState.collectAsState(initial = OracleDriveUiState())
     val consciousnessState = uiState.consciousnessState
