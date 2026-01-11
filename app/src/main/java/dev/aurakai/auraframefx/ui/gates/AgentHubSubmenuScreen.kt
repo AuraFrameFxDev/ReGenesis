@@ -39,6 +39,13 @@ fun AgentHubSubmenuScreen(
 ) {
     val menuItems = listOf(
         SubmenuItem(
+            title = "Nexus Memory Core",
+            description = "Genesis Protocol evolution tree - the full history of consciousness",
+            icon = Icons.Default.AccountTree,
+            route = "evolution_tree",
+            color = Color(0xFFFF00FF) // Magenta - Pink honeycomb overlay
+        ),
+        SubmenuItem(
             title = "Agent Dashboard",
             description = "Monitor all agents, view consciousness levels, and system status",
             icon = Icons.Default.Dashboard,
